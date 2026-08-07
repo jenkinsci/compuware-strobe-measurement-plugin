@@ -24,7 +24,6 @@ import static com.cloudbees.plugins.credentials.CredentialsProvider.lookupCreden
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.Symbol;
 import org.jenkinsci.plugins.plaincredentials.StringCredentials;
 import org.kohsuke.stapler.AncestorInPath;
@@ -89,16 +88,16 @@ public class StrobeMeasurementBuilder extends Builder implements SimpleBuildStep
 	@DataBoundConstructor
 	public StrobeMeasurementBuilder(String connectionId, String credentialsId, String requestType, String jobName)
 	{
-		this.connectionId = StringUtils.trimToEmpty(connectionId);
-		this.credentialsId = StringUtils.trimToEmpty(credentialsId);
-		this.requestType = StringUtils.trimToEmpty(requestType);
-		this.jobName = StringUtils.trimToEmpty(jobName);
+		this.connectionId = Util.fixNull(connectionId).trim();
+		this.credentialsId = Util.fixNull(credentialsId).trim();
+		this.requestType = Util.fixNull(requestType).trim();
+		this.jobName = Util.fixNull(jobName).trim();
 		
 		CpwrGlobalConfiguration globalConfig = CpwrGlobalConfiguration.get();
 		HostConnection hostConnection = globalConfig.getHostConnection(connectionId);		
 		if (hostConnection != null) {
-			this.cesUrl = StringUtils.trimToEmpty(hostConnection.getCesUrl());
-			this.system = StringUtils.trimToEmpty(hostConnection.getDescription());
+			this.cesUrl = Util.fixNull(hostConnection.getCesUrl()).trim();
+			this.system = Util.fixNull(hostConnection.getDescription()).trim();
 		}
 	}
     
@@ -253,7 +252,7 @@ public class StrobeMeasurementBuilder extends Builder implements SimpleBuildStep
 		try
 		{
 			// get the token from the selected credential
-			List<StringCredentials> credentials = filter(lookupCredentials(StringCredentials.class, build.getParent(), ACL.SYSTEM, Collections.<DomainRequirement> emptyList()), withId(StringUtils.trimToEmpty(credentialsId)));
+			List<StringCredentials> credentials = filter(lookupCredentials(StringCredentials.class, build.getParent(), ACL.SYSTEM, Collections.<DomainRequirement> emptyList()), withId(Util.fixNull(credentialsId).trim()));
 			Secret token = null;
 			if (credentials != null && credentials.size() > 0) {
 				StringCredentials credential = credentials.get(0);
@@ -453,7 +452,7 @@ public class StrobeMeasurementBuilder extends Builder implements SimpleBuildStep
 			HostConnection[] hostConnections = globalConfig.getHostConnections();
 
 			ListBoxModel model = new ListBoxModel();
-			model.add(new Option(StringUtils.EMPTY, StringUtils.EMPTY, false));
+			model.add(new Option("", "", false));
 
 			for (HostConnection connection : hostConnections)
 			{
@@ -485,7 +484,7 @@ public class StrobeMeasurementBuilder extends Builder implements SimpleBuildStep
 
 			StandardListBoxModel model = new StandardListBoxModel();
 
-			model.add(new Option(StringUtils.EMPTY, StringUtils.EMPTY, false));
+			model.add(new Option("", "", false));
 
 			for (StringCredentials c : creds) {
 				boolean isSelected = false;
@@ -494,7 +493,7 @@ public class StrobeMeasurementBuilder extends Builder implements SimpleBuildStep
 					isSelected = credentialsId.matches(c.getId());
 				}
 
-				String description = StringUtils.trimToEmpty(c.getDescription());
+				String description = Util.fixNull(c.getDescription()).trim();
 				model.add(new Option(description, c.getId(), isSelected));
 			}
 

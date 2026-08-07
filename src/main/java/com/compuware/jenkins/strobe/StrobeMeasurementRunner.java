@@ -19,7 +19,6 @@ package com.compuware.jenkins.strobe;
 
 import java.io.IOException;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -32,6 +31,7 @@ import hudson.Launcher;
 import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.util.Secret;
+import hudson.Util;
 
 public class StrobeMeasurementRunner
 {	
@@ -73,22 +73,22 @@ public class StrobeMeasurementRunner
 
 		// do this so that we will try and send an email since the notification code requires us to attempt to send an email
 		String DEFAULT_EMAIL = "dummy@compuware.com"; 
-		String emailToUse = smBuilder.getEmailto().isEmpty() ? DEFAULT_EMAIL : StringUtils.trimToEmpty(smBuilder.getEmailto());
+		String emailToUse = smBuilder.getEmailto().isEmpty() ? DEFAULT_EMAIL : Util.fixNull(smBuilder.getEmailto()).trim();
 				
         StringBuilder json = new StringBuilder();
         json.append("{");
-        json.append("\"reqType\":\"" + StringUtils.trimToEmpty(smBuilder.getRequestType()) + "\",");
-        json.append("\"jobName\":\"" + StringUtils.trimToEmpty(smBuilder.getJobName()) + "\",");
-        json.append("\"system\":\"" + StringUtils.trimToEmpty(smBuilder.getSystem()) + "\",");
-        json.append("\"tags\":\"" + StringUtils.trimToEmpty(smBuilder.getTags()) + "\",");
-        json.append("\"profileName\":\"" + StringUtils.trimToEmpty(smBuilder.getProfileName()) + "\",");
+        json.append("\"reqType\":\"" + Util.fixNull(smBuilder.getRequestType()).trim() + "\",");
+        json.append("\"jobName\":\"" + Util.fixNull(smBuilder.getJobName()).trim() + "\",");
+        json.append("\"system\":\"" + Util.fixNull(smBuilder.getSystem()).trim() + "\",");
+        json.append("\"tags\":\"" + Util.fixNull(smBuilder.getTags()).trim() + "\",");
+        json.append("\"profileName\":\"" + Util.fixNull(smBuilder.getProfileName()).trim() + "\",");
         json.append("\"emailto\":\"" + emailToUse + "\",");
-        json.append("\"duration\":\"" + StringUtils.trimToEmpty(smBuilder.getDuration()) + "\",");
-        json.append("\"samples\":\"" + StringUtils.trimToEmpty(smBuilder.getSamples()) + "\",");
-        json.append("\"limit\":\"" + StringUtils.trimToEmpty(smBuilder.getLimit()) + "\",");
-        json.append("\"finalAction\":\"" + StringUtils.trimToEmpty(smBuilder.getFinalAction()) + "\",");
-        json.append("\"hlq\":\"" + StringUtils.trimToEmpty(smBuilder.getHlq()) + "\",");
-        json.append("\"tranid\":\"" + StringUtils.trimToEmpty(smBuilder.getTransactionId()) + "\",");
+        json.append("\"duration\":\"" + Util.fixNull(smBuilder.getDuration()).trim() + "\",");
+        json.append("\"samples\":\"" + Util.fixNull(smBuilder.getSamples()).trim() + "\",");
+        json.append("\"limit\":\"" + Util.fixNull(smBuilder.getLimit()).trim() + "\",");
+        json.append("\"finalAction\":\"" + Util.fixNull(smBuilder.getFinalAction()).trim() + "\",");
+        json.append("\"hlq\":\"" + Util.fixNull(smBuilder.getHlq()).trim() + "\",");
+        json.append("\"tranid\":\"" + Util.fixNull(smBuilder.getTransactionId()).trim() + "\",");
         json.append("\"initBy\":\"CI\",");     
         
         // adding api notification json
